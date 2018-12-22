@@ -20,6 +20,7 @@ want. The following lists common scenarios and provides links to
 the guide(s) that most closely satisfy that scenario.
 
 - I just want to play, make a demo, or learn CanJS right now! 👉 Use the [ES module bundle](#ImportingthecoreESmodulebundle) or an [online code editor](#OnlineCodeEditors).
+- I use Rollup 👉 [Rollup](#Rollup)
 - I use webpack 👉 [Webpack](#Webpack)
 - I use StealJS 👉 [StealJS](#StealJS)
 - I use Browserify 👉 [Browserify](#Browserify)
@@ -42,7 +43,7 @@ any development environment. This section gives technical details on these items
   is actually the [can-component](https://www.npmjs.com/package/can-component) package, housed
   in its own [GitHub repository](https://github.com/canjs/can-component). The modules within
   these packages are written in ES5 JavaScript and CommonJS, so they can be imported by webpack, Browserify,
-  StealJS, and a do not require transpiling.
+  StealJS, and a do not require transpiling. They can be also Imported into Rollup with some rollup-plugins to produce individual ESModules with code splitting and treeshaking.
 
   Apps that need long-term flexibility should install these packages directly. Direct installation
   means you can upgrade a small part of CanJS when needed.
@@ -61,7 +62,7 @@ any development environment. This section gives technical details on these items
     ...
     ```
 
-    Most module loaders setups with tree-shaking (ex: webpack 2 and StealJS 2)
+    Most module loader setups with tree-shaking (ex: webpack 2 and StealJS 2)
     use this module. Import
     named exports from the `can` package like this:
 
@@ -463,6 +464,39 @@ went wrong.
 Ready to build an app with CanJS? Check out our [guides/chat] or one of our
 [guides/recipes]!
 
+
+## Rollup
+Rollup is not exactly like the other Solutions as it allows you finegrined config and it can produce ES2030 Modules as it is a nativ ESM Bundler but it can also output to CJS and UMD or AMD also StealJS & SystemJS Compatible Packages. If you work on a Large Code Base you will Probally use this. If your Interrested in More Options and Ways to use Rollup to Produce Highly Optimized App Bundels visit our Indipendent Guide setting up Higly Optimized Rollup Build.
+
+
+```bash
+npm install -D rollup rollup-plugin-commonjs rollup-plugin-json rollup-plugin-node-builtins  rollup-plugin-node-globals rollup-plugin-node-resolve
+```
+
+Create a `rollup.config.js`
+
+```js
+import commonjs from 'rollup-plugin-commonjs';
+import resolve from 'rollup-plugin-node-resolve';
+import builtins from 'rollup-plugin-node-builtins';
+import globals from 'rollup-plugin-node-globals';
+
+return {
+    input: './index.js',
+    plugins: [ commonjs(), globals(), builtins(), resolve({
+      browser: false, 
+    })],
+    output: [{ // SystemJS version, for older browsers
+      dir: './system',
+      format: 'system',
+      exports: 'named',
+      sourcemap: true
+    },{ // ESModule version, for modern browsers
+      dir: './module',
+      format: 'esm',
+    }]
+  }
+```
 
 ## Webpack
 
